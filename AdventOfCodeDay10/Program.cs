@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace AdventOfCodeDay10
 {
@@ -7,24 +8,7 @@ namespace AdventOfCodeDay10
     {
         static void Main(string[] args)
         {
-            var navigationSubsystem = new List<string>()
-            {
-                "[({(<(())[]>[[{[]{<()<>",
-                "[(()[<>])]({[<{<<[]>>(",
-                // The following line is corrupt
-                "{([(<{}[<>[]}>{[]{[(<()>",
-                "(((({<>}<{<{<>}{[]{[]{}",
-                // The following line is corrupt
-                "[[<[([]))<([[{}[[()]]]",
-                // The following line is corrupt
-                "[{[{({}]{}}([{[{{{}}([]",
-                "{<[[]]>}<{[{[{[]{()[[[]",
-                // The following line is corrupt
-                "[<(<(<(<{}))><([]([]()",
-                // The following line is corrupt
-                "<{([([[(<>()){}]>(<<{{",
-                "<{([{{}}[<[[[<>{}]]]>[]]"
-            };
+            var navigationSubsystem = File.ReadAllLines("Resources/input.txt");                
 
             var Openers = "[{(<";
             var Closers = "]})>";
@@ -32,10 +16,8 @@ namespace AdventOfCodeDay10
 
             foreach (string line in navigationSubsystem)
             {
-                var navigationStack = new Stack<char>();
-                
-                score = SearchLineForErrors(Openers, Closers, line, navigationStack, score);
-                
+                var navigationStack = new Stack<char>();                
+                score = SearchLineForErrors(Openers, Closers, line, navigationStack, score);                
             }
             Console.WriteLine($"The total syntax error score for these errors is {score} points.");
         }
@@ -44,7 +26,6 @@ namespace AdventOfCodeDay10
         {
             for (int a = 0; a < line.Length; a++)
             {
-
                 if (Openers.Contains(line[a]))
                 {
                     navigationStack.Push(line[a]);
@@ -52,8 +33,8 @@ namespace AdventOfCodeDay10
                 else if (Closers.Contains(line[a]))
                 {
                     var c = navigationStack.Pop();
-
                     var indexOfCloserCharacter = Openers.IndexOf(c);
+
                     if (Closers[indexOfCloserCharacter] != line[a])
                     {
                         Console.WriteLine($"{line} - Expected {Closers[indexOfCloserCharacter]}, but found {line[a]} instead.");
